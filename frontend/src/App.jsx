@@ -72,7 +72,7 @@ function App() {
                 <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl">
                   Track Your Fitness Journey with{" "}
                   <span className="bg-gradient-to-r from-primary to-purple-500 bg-clip-text text-transparent">
-              FitAI
+              FitM8
             </span>
                 </h1>
                 <p className="max-w-[600px] text-muted-foreground md:text-xl">

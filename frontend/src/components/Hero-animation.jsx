@@ -1,11 +1,8 @@
-"use client"
-
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef } from "react"
 import { motion } from "framer-motion"
 
 export default function HeroAnimation() {
   const canvasRef = useRef(null)
-  const [isHovered, setIsHovered] = useState(false)
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -42,7 +39,6 @@ export default function HeroAnimation() {
     // Animation variables
     let animationFrame
     let progress = 0
-    let hoverEffect = 0
 
     // Draw the chart
     const drawChart = () => {
@@ -81,39 +77,21 @@ export default function HeroAnimation() {
         ctx.fill()
       }
 
-      // Draw grid lines with hover animation
-      const gridOpacity = isHovered ? 0.2 : 0.1
-      const gridColor = isHovered
-        ? document.documentElement.classList.contains("dark")
-          ? "rgba(148, 163, 235, "
-          : "rgba(79, 70, 229, "
-        : "rgba(148, 163, 184, "
+      // Draw grid lines (without hover animation)
+      const gridOpacity = 0.1
+      const gridColor = "rgba(148, 163, 184, "
 
       // Horizontal grid lines
       for (let i = 0; i <= 5; i++) {
         const y = padding + (chartHeight / 5) * i
 
-        // Add subtle wave animation to grid lines when hovered
-        const waveOffset = isHovered ? Math.sin(time * 2 + i) * 2 : 0
-
         ctx.beginPath()
         ctx.strokeStyle = `${gridColor}${gridOpacity})`
-        ctx.lineWidth = isHovered ? 1.5 : 1
+        ctx.lineWidth = 1
 
-        if (isHovered) {
-          // Draw wavy line when hovered
-          ctx.moveTo(padding, y + waveOffset)
-
-          for (let x = 0; x <= chartWidth; x += 5) {
-            const waveY = y + Math.sin(time * 3 + x * 0.02) * 1.5
-            ctx.lineTo(padding + x, waveY)
-          }
-        } else {
-          // Draw straight line when not hovered
-          ctx.moveTo(padding, y)
-          ctx.lineTo(width - padding, y)
-        }
-
+        // Draw straight line
+        ctx.moveTo(padding, y)
+        ctx.lineTo(width - padding, y)
         ctx.stroke()
       }
 
@@ -121,27 +99,13 @@ export default function HeroAnimation() {
       for (let i = 0; i <= 10; i++) {
         const x = padding + (chartWidth / 10) * i
 
-        // Add subtle wave animation to grid lines when hovered
-        const waveOffset = isHovered ? Math.sin(time * 2 + i) * 2 : 0
-
         ctx.beginPath()
         ctx.strokeStyle = `${gridColor}${gridOpacity})`
-        ctx.lineWidth = isHovered ? 1.5 : 1
+        ctx.lineWidth = 1
 
-        if (isHovered) {
-          // Draw wavy line when hovered
-          ctx.moveTo(x + waveOffset, padding)
-
-          for (let y = 0; y <= chartHeight; y += 5) {
-            const waveX = x + Math.sin(time * 3 + y * 0.02) * 1.5
-            ctx.lineTo(waveX, padding + y)
-          }
-        } else {
-          // Draw straight line when not hovered
-          ctx.moveTo(x, padding)
-          ctx.lineTo(x, height - padding)
-        }
-
+        // Draw straight line
+        ctx.moveTo(x, padding)
+        ctx.lineTo(x, height - padding)
         ctx.stroke()
       }
 
@@ -161,8 +125,8 @@ export default function HeroAnimation() {
       // Use bezier curves for smoother, more natural lines
       if (pointsToDraw > 1) {
         ctx.moveTo(
-          padding + (chartWidth / 10) * dataPoints[0].x,
-          padding + chartHeight - (chartHeight / 50) * dataPoints[0].y,
+            padding + (chartWidth / 10) * dataPoints[0].x,
+            padding + chartHeight - (chartHeight / 50) * dataPoints[0].y,
         )
 
         for (let i = 0; i < pointsToDraw - 1; i++) {
@@ -170,18 +134,10 @@ export default function HeroAnimation() {
           const next = dataPoints[i + 1]
 
           const currentX = padding + (chartWidth / 10) * current.x
-          const currentY =
-            padding +
-            chartHeight -
-            (chartHeight / 50) * current.y +
-            (isHovered ? Math.sin(time * 3 + i) * 5 * hoverEffect : 0)
+          const currentY = padding + chartHeight - (chartHeight / 50) * current.y
 
           const nextX = padding + (chartWidth / 10) * next.x
-          const nextY =
-            padding +
-            chartHeight -
-            (chartHeight / 50) * next.y +
-            (isHovered ? Math.sin(time * 3 + (i + 1)) * 5 * hoverEffect : 0)
+          const nextY = padding + chartHeight - (chartHeight / 50) * next.y
 
           // Control points for the bezier curve
           const cpX1 = currentX + (nextX - currentX) / 3
@@ -227,14 +183,11 @@ export default function HeroAnimation() {
       for (let i = 0; i < pointsToDraw; i++) {
         const point = dataPoints[i]
         const x = padding + (chartWidth / 10) * point.x
-
-        // Add the same wave effect to points
-        const waveOffset = isHovered ? Math.sin(time * 3 + i) * 5 * hoverEffect : 0
-        const y = padding + chartHeight - (chartHeight / 50) * point.y + waveOffset
+        const y = padding + chartHeight - (chartHeight / 50) * point.y
 
         // Pulse effect
         const pulse = Math.sin(time * 3) * 0.5 + 1.5
-        const pointSize = isHovered && i === pointsToDraw - 1 ? 6 * pulse : 5
+        const pointSize = 5
 
         ctx.beginPath()
         ctx.arc(x, y, pointSize, 0, Math.PI * 2)
@@ -264,26 +217,11 @@ export default function HeroAnimation() {
         ctx.strokeStyle = "white"
         ctx.lineWidth = 2
         ctx.stroke()
-
-        // Add glow effect to the last point when hovered
-        if (isHovered && i === pointsToDraw - 1) {
-          ctx.beginPath()
-          ctx.arc(x, y, pointSize * 2, 0, Math.PI * 2)
-          ctx.fillStyle = "rgba(37, 99, 235, 0.1)"
-          ctx.fill()
-        }
       }
 
       // Animate
       if (progress < 1) {
         progress += 0.01
-      }
-
-      // Animate hover effect
-      if (isHovered && hoverEffect < 1) {
-        hoverEffect += 0.05
-      } else if (!isHovered && hoverEffect > 0) {
-        hoverEffect -= 0.05
       }
 
       animationFrame = requestAnimationFrame(drawChart)
@@ -297,51 +235,46 @@ export default function HeroAnimation() {
       window.removeEventListener("resize", setCanvasDimensions)
       cancelAnimationFrame(animationFrame)
     }
-  }, [isHovered])
+  }, [])
 
   return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.9 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.5 }}
-      className="relative w-full max-w-[600px] aspect-[4/3]"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
-      <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-blue-500/20 to-purple-500/10 dark:from-blue-500/10 dark:to-purple-500/5 shadow-xl">
-        <canvas ref={canvasRef} className="h-full w-full rounded-2xl" />
-      </div>
       <motion.div
-        className="absolute bottom-4 left-4 right-4 rounded-xl bg-background/80 dark:bg-background/60 p-4 backdrop-blur-sm"
-        whileHover={{ y: -5 }}
-        transition={{ type: "spring", stiffness: 300 }}
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5 }}
+          className="relative w-full max-w-[600px] aspect-[4/3]"
       >
-        <div className="text-sm font-medium">Weight Progress</div>
-        <div className="mt-1 text-2xl font-bold bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
-          -45 lbs
+        <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-blue-500/20 to-purple-500/10 dark:from-blue-500/10 dark:to-purple-500/5 shadow-xl">
+          <canvas ref={canvasRef} className="h-full w-full rounded-2xl" />
         </div>
-        <div className="mt-1 text-xs text-muted-foreground">Last 10 weeks</div>
-      </motion.div>
+        <motion.div
+            className="absolute bottom-4 left-4 right-4 rounded-xl bg-background/80 dark:bg-background/60 p-4 backdrop-blur-sm"
+            transition={{ type: "spring", stiffness: 300 }}
+        >
+          <div className="text-sm font-medium">Weight Progress</div>
+          <div className="mt-1 text-2xl font-bold bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
+            -45 lbs
+          </div>
+          <div className="mt-1 text-xs text-muted-foreground">Last 10 weeks</div>
+        </motion.div>
 
-      {/* Interactive elements */}
-      <motion.div
-        className="absolute top-4 right-4 bg-background/80 dark:bg-background/60 rounded-full p-2 backdrop-blur-sm cursor-pointer"
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.95 }}
-      >
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M15 5L12 2L9 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-          <path d="M12 22V2" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-          <path
-            d="M9 19L12 22L15 19"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
+        {/* Interactive elements */}
+        <motion.div
+            className="absolute top-4 right-4 bg-background/80 dark:bg-background/60 rounded-full p-2 backdrop-blur-sm cursor-pointer"
+            whileTap={{ scale: 0.95 }}
+        >
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M15 5L12 2L9 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M12 22V2" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            <path
+                d="M9 19L12 22L15 19"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+            />
+          </svg>
+        </motion.div>
       </motion.div>
-    </motion.div>
   )
 }
-

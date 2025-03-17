@@ -1,5 +1,6 @@
 "use client"
 
+// eslint-disable-next-line no-unused-vars
 import { motion } from "framer-motion"
 import { Activity, Calendar, Dumbbell, Heart, TrendingUp, Zap } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card"
@@ -24,8 +25,12 @@ export default function DashboardPreview() {
     <div className="relative mx-auto max-w-5xl overflow-hidden rounded-xl border bg-background p-1 shadow-2xl">
       <div className="flex items-center border-b p-4">
         <div className="flex items-center gap-2">
-          <Heart className="h-6 w-6 fill-primary text-primary" />
-          <span className="text-xl font-bold">FitAI Dashboard</span>
+          <img
+              src="/logo.png"
+              alt="FitM8 Logo"
+              className="h-8 w-8"
+          />
+          <span className="text-xl font-bold">FitM8 Dashboard</span>
         </div>
         <div className="ml-auto flex items-center gap-4">
           <div className="h-3 w-3 rounded-full bg-green-500" />

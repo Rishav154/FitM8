@@ -11,7 +11,7 @@ const testimonials = [
     name: "Alex Johnson",
     role: "Marathon Runner",
     content:
-      "FitAI has completely transformed my training. The AI coach adapts to my progress and helps me optimize my runs. I've improved my marathon time by 15 minutes!",
+      "FitM8 has completely transformed my training. The AI coach adapts to my progress and helps me optimize my runs. I've improved my marathon time by 15 minutes!",
     avatar: "/placeholder.svg?height=40&width=40",
     rating: 5,
   },
